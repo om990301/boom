@@ -1,0 +1,171 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+
+const int height = 6;
+const int width = 6;
+const int mineTotal = 15;
+
+int mine[height + 2][width + 2];
+int state[height][width] ;
+
+void initialGame() {
+	int i, j, a, b, t = 1, x, y, c, d;
+	for (i = 0; i < height + 2; i++) {
+		for (j = 0; j < width + 2; j++) {
+			mine[i][j] = 0;
+			state[i][j] = 'c';
+		}
+	}
+	while (t <= mineTotal) {
+		a = rand() % height + 1;
+		b = rand() % width + 1;
+		if (mine[a][b] != -1) {
+			mine[a][b] = -1;
+			t++;
+
+			for (x = a - 1; x <= a + 1; x++) {
+				for (c = b - 1; c <= b + 1; c++) {
+					if (mine[x][c] != -1) {
+						mine[x][c]++;
+					}
+				}
+			}
+			x = 0, y = 0, c = 0, d = 0;
+
+		}
+	}
+
+}
+
+void printGameField() {
+	int i, j, k, n, p = 1;
+	printf("x\\y 1");
+	for (n = 2; n <= width; n++) {
+		printf("   %d", n);
+	}
+	printf("\n");
+	for (i = 1; i <= height; i++) {
+		if (i == 1) {
+			for (k = 1; k <= width; k++) {
+				if (k == 1) {
+					printf(" „¡„Ÿ");
+				}
+				else {
+					printf("„¦„Ÿ");
+				}
+				if (k == width) {
+					printf("„¢\n");
+				}
+			}
+		}
+		else {
+			for (k = 1; k <= width; k++) {
+				if (k == 1) {
+					printf(" „¥„Ÿ");
+				}
+				else {
+					printf("„©„Ÿ");
+				}
+				if (k == width) {
+					printf("„§\n");
+				}
+			}
+		}
+
+		printf("%d", p);
+
+		for (j = 1; j <= width; j++) {
+			if (state[i][j] == 'u') {
+
+				if (mine[i][j] == 0) {
+					printf("„   ");
+
+				}
+				if (mine[i][j] == -1) {
+					printf("„ œ");
+
+				}
+				if ((mine[i][j] != -1) && (mine[i][j] != 0)) {
+
+					printf("„ % 2d", mine[i][j]);
+
+				}
+				if (j == width) {
+					printf("„ \n");
+
+				}
+			}
+			
+				if (state[i][j] == 'c') {
+					printf("„ ¡");
+					if (j == width) {
+						printf("„ \n");
+					}
+				}
+				if (state[i][j] == 'f') {
+					printf("„  f");
+					if (j == width) {
+						printf("„ \n");
+					}
+				}
+		}
+		if (i == height) {
+			for (k = 1; k <= width; k++) {
+				if (k == 1) {
+					printf(" „¤„Ÿ");
+				}
+				else {
+					printf("„¨„Ÿ");
+				}
+				if (k == width) {
+					printf("„£\n");
+				}
+			}
+		}
+		p++;
+	}
+
+}
+
+		int main(){
+	int a = 0, b = 0,c=0,f=0,u=0;
+	srand((unsigned)time(NULL));
+	initialGame();
+	printGameField();
+	printf("1 Uncover a cell to see the number of mines around the cell.\n2 Flag a cell if the player thinks there is a mine in that cell.A flagged cell cannot be uncovered.\n3 Unflag a cell.\n");
+	while (f != mineTotal && u != height*width - mineTotal) {
+		printf("enter an action number");
+		scanf("%d", &a);
+		printf("enter a number");
+		scanf("%d %d", &b, &c);
+		if (a == 1) {
+			if (state[b][c] != 'f' && state[b][c] != 'u') {
+				state[b][c] = 'u';
+				u++;
+			}
+			printGameField();
+		}
+		if (a == 2 ) {
+			if (state[b][c] != 'f' && state[b][c] != 'u') {
+				state[b][c] = 'f';
+				f++;
+			}
+			printGameField();
+		}
+		if (a == 3) {
+			if (state[b][c] == 'f') {
+				state[b][c] = 'c';
+			}
+			printGameField();
+		}
+		if (mine[b][c] == -1) {
+			printf("You lose\n");
+			break;
+		}
+	}
+	system("pause");
+	return 0;
+}
